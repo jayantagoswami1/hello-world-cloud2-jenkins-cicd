@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="dae13dd8-4f31-4bbb-8d3f-613bf03a651b" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="hello-world-cicd-jenkinsFlow" doc:id="b2e0eea5-4270-4f95-af27-de6277953c97" >
+		<http:listener doc:name="Listener" doc:id="34792dd9-0166-44e6-9062-dfab15d71699" config-ref="HTTP_Listener_config" path="/helloworld"/>
+		<flow-ref doc:name="Flow Reference" doc:id="64310fe9-a217-4093-a490-6a4852898e0f" name="hello-world-cicd-transform"/>
+		<flow-ref doc:name="Flow Reference" doc:id="63a7c7e3-8b0f-4d43-9425-a33054c62e0b" name="hello-world-cicd-logger-flow"/>
+	</flow>
+	<flow name="hello-world-cicd-transform" doc:id="10782ebd-6cc6-4130-bd72-93591e97a66c" >
+		<ee:transform doc:name="Transform Message" doc:id="3ab58e3b-ac39-4400-a93a-2961edda0909" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message":"hello world"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="hello-world-cicd-logger-flow" doc:id="4612d5ea-443f-48c6-b11b-304f3d8c222e" >
+		<logger level="INFO" doc:name="Logger" doc:id="ed31ba7b-7c70-4410-a946-231054d85fc9" message="Logging hello world ******"/>
+	</flow>
+</mule>
